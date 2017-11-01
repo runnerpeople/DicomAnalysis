@@ -1,0 +1,14 @@
+<!DOCTYPE RCC><RCC version="1.0">
+<qresource prefix="/image">
+    <file>497102554.jpg</file>
+    <file>medical-background-with-loop_4p1uvboye__F0008.png</file>
+    <file>icons8-erase.png</file>
+    <file>icons8-line.png</file>
+    <file>icons8-pencil-drawing.png</file>
+    <file>icons8-polygon.png</file>
+    <file>icons8-polyline.png</file>
+    <file>icons8-undo.png</file>
+    <file>icons8-redo.png</file>
+    <file>icons8-add-image.png</file>
+</qresource>
+</RCC>

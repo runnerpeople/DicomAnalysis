@@ -1,0 +1,345 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>AppWindow</class>
+ <widget class="QMainWindow" name="AppWindow">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>952</width>
+    <height>740</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>MainWindow</string>
+  </property>
+  <property name="styleSheet">
+   <string notr="true">#AppWindow {
+    background-image: url(:/image/medical-background-with-loop_4p1uvboye__F0008.png);
+}</string>
+  </property>
+  <widget class="QWidget" name="centralwidget">
+   <widget class="QTabWidget" name="tabWidget">
+    <property name="geometry">
+     <rect>
+      <x>20</x>
+      <y>30</y>
+      <width>911</width>
+      <height>661</height>
+     </rect>
+    </property>
+    <property name="currentIndex">
+     <number>4</number>
+    </property>
+    <widget class="QWidget" name="Patient">
+     <attribute name="title">
+      <string>Patient</string>
+     </attribute>
+     <widget class="QTableView" name="patientTable">
+      <property name="geometry">
+       <rect>
+        <x>0</x>
+        <y>0</y>
+        <width>911</width>
+        <height>631</height>
+       </rect>
+      </property>
+     </widget>
+    </widget>
+    <widget class="QWidget" name="Study">
+     <attribute name="title">
+      <string>Study</string>
+     </attribute>
+     <widget class="QTableView" name="studyTable">
+      <property name="geometry">
+       <rect>
+        <x>0</x>
+        <y>0</y>
+        <width>911</width>
+        <height>641</height>
+       </rect>
+      </property>
+     </widget>
+    </widget>
+    <widget class="QWidget" name="Serie">
+     <attribute name="title">
+      <string>Serie</string>
+     </attribute>
+     <widget class="QTableView" name="serieTable">
+      <property name="geometry">
+       <rect>
+        <x>0</x>
+        <y>0</y>
+        <width>911</width>
+        <height>641</height>
+       </rect>
+      </property>
+     </widget>
+    </widget>
+    <widget class="QWidget" name="ImageInfo">
+     <attribute name="title">
+      <string>ImageInfo</string>
+     </attribute>
+     <widget class="QTableView" name="imageTable">
+      <property name="geometry">
+       <rect>
+        <x>0</x>
+        <y>0</y>
+        <width>911</width>
+        <height>631</height>
+       </rect>
+      </property>
+     </widget>
+    </widget>
+    <widget class="QWidget" name="ImageEdit">
+     <attribute name="title">
+      <string>ImageEdit</string>
+     </attribute>
+     <widget class="QTableView" name="imageTable2">
+      <property name="geometry">
+       <rect>
+        <x>0</x>
+        <y>10</y>
+        <width>411</width>
+        <height>561</height>
+       </rect>
+      </property>
+     </widget>
+     <widget class="QGraphicsView" name="graphicsView">
+      <property name="geometry">
+       <rect>
+        <x>430</x>
+        <y>70</y>
+        <width>451</width>
+        <height>461</height>
+       </rect>
+      </property>
+     </widget>
+     <widget class="QWidget" name="gridLayoutWidget">
+      <property name="geometry">
+       <rect>
+        <x>430</x>
+        <y>20</y>
+        <width>207</width>
+        <height>41</height>
+       </rect>
+      </property>
+      <layout class="QGridLayout" name="gridLayout" columnstretch="0,0,0,0">
+       <property name="spacing">
+        <number>10</number>
+       </property>
+       <item row="0" column="0">
+        <widget class="QPushButton" name="point_button">
+         <property name="text">
+          <string/>
+         </property>
+         <property name="icon">
+          <iconset resource="resources.qrc">
+           <normaloff>:/image/icons8-pencil-drawing.png</normaloff>:/image/icons8-pencil-drawing.png</iconset>
+         </property>
+        </widget>
+       </item>
+       <item row="0" column="3">
+        <widget class="QPushButton" name="polygon_button">
+         <property name="text">
+          <string/>
+         </property>
+         <property name="icon">
+          <iconset resource="resources.qrc">
+           <normaloff>:/image/icons8-polygon.png</normaloff>:/image/icons8-polygon.png</iconset>
+         </property>
+        </widget>
+       </item>
+       <item row="0" column="2">
+        <widget class="QPushButton" name="polyline_button">
+         <property name="text">
+          <string/>
+         </property>
+         <property name="icon">
+          <iconset resource="resources.qrc">
+           <normaloff>:/image/icons8-polyline.png</normaloff>:/image/icons8-polyline.png</iconset>
+         </property>
+        </widget>
+       </item>
+       <item row="0" column="1">
+        <widget class="QPushButton" name="line_button">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="minimumSize">
+          <size>
+           <width>0</width>
+           <height>0</height>
+          </size>
+         </property>
+         <property name="text">
+          <string/>
+         </property>
+         <property name="icon">
+          <iconset resource="resources.qrc">
+           <normaloff>:/image/icons8-line.png</normaloff>:/image/icons8-line.png</iconset>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+     <widget class="QWidget" name="gridLayoutWidget_3">
+      <property name="geometry">
+       <rect>
+        <x>530</x>
+        <y>540</y>
+        <width>207</width>
+        <height>41</height>
+       </rect>
+      </property>
+      <layout class="QGridLayout" name="gridLayout_3" columnstretch="0,0,0">
+       <property name="spacing">
+        <number>10</number>
+       </property>
+       <item row="0" column="0">
+        <widget class="QPushButton" name="undo_button">
+         <property name="text">
+          <string/>
+         </property>
+         <property name="icon">
+          <iconset resource="resources.qrc">
+           <normaloff>:/image/icons8-undo.png</normaloff>:/image/icons8-undo.png</iconset>
+         </property>
+        </widget>
+       </item>
+       <item row="0" column="1">
+        <widget class="QPushButton" name="save_button">
+         <property name="text">
+          <string/>
+         </property>
+         <property name="icon">
+          <iconset resource="resources.qrc">
+           <normaloff>:/image/icons8-add-image.png</normaloff>:/image/icons8-add-image.png</iconset>
+         </property>
+        </widget>
+       </item>
+       <item row="0" column="2">
+        <widget class="QPushButton" name="redo_button">
+         <property name="text">
+          <string/>
+         </property>
+         <property name="icon">
+          <iconset resource="resources.qrc">
+           <normaloff>:/image/icons8-redo.png</normaloff>:/image/icons8-redo.png</iconset>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+    </widget>
+    <widget class="QWidget" name="Dicom">
+     <attribute name="title">
+      <string>Dicom</string>
+     </attribute>
+     <widget class="QTableView" name="dicomTable">
+      <property name="geometry">
+       <rect>
+        <x>0</x>
+        <y>0</y>
+        <width>911</width>
+        <height>641</height>
+       </rect>
+      </property>
+     </widget>
+    </widget>
+   </widget>
+  </widget>
+  <widget class="QMenuBar" name="menubar">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>0</y>
+     <width>952</width>
+     <height>26</height>
+    </rect>
+   </property>
+   <widget class="QMenu" name="menuFile">
+    <property name="title">
+     <string>Edit</string>
+    </property>
+    <addaction name="actionAdd_dicom"/>
+    <addaction name="actionAdd_dicom_dir_DICOMDIR"/>
+    <addaction name="separator"/>
+    <addaction name="actionCopy_dicom"/>
+    <addaction name="separator"/>
+    <addaction name="actionDelete_dicom_file"/>
+   </widget>
+   <widget class="QMenu" name="menuSearch">
+    <property name="title">
+     <string>Search</string>
+    </property>
+    <addaction name="actionQuery"/>
+    <addaction name="actionAdvanced_query_For_Advanced_User"/>
+   </widget>
+   <widget class="QMenu" name="menuSettings">
+    <property name="title">
+     <string>Settings</string>
+    </property>
+    <addaction name="actionStorage"/>
+    <addaction name="actionDicom_Image_Storage"/>
+   </widget>
+   <widget class="QMenu" name="menuAbout">
+    <property name="title">
+     <string>About</string>
+    </property>
+   </widget>
+   <addaction name="menuFile"/>
+   <addaction name="menuSearch"/>
+   <addaction name="menuSettings"/>
+   <addaction name="menuAbout"/>
+  </widget>
+  <widget class="QStatusBar" name="statusbar"/>
+  <action name="actionAdd_dicom">
+   <property name="text">
+    <string>Add dicom file (dcm)</string>
+   </property>
+  </action>
+  <action name="actionAdd_dicom_dir_DICOMDIR">
+   <property name="text">
+    <string>Add dicom dir (DICOMDIR)</string>
+   </property>
+  </action>
+  <action name="actionCopy_dicom">
+   <property name="text">
+    <string>Copy dicom</string>
+   </property>
+  </action>
+  <action name="actionDelete_dicom_file">
+   <property name="text">
+    <string>Delete dicom</string>
+   </property>
+  </action>
+  <action name="actionQuery">
+   <property name="text">
+    <string>Basic search</string>
+   </property>
+  </action>
+  <action name="actionAdvanced_query_For_Advanced_User">
+   <property name="text">
+    <string>Advanced query (For Advanced User)</string>
+   </property>
+  </action>
+  <action name="actionStorage">
+   <property name="text">
+    <string>URL Storage</string>
+   </property>
+  </action>
+  <action name="actionDicom_Image_Storage">
+   <property name="text">
+    <string>Dicom/Image Storage</string>
+   </property>
+  </action>
+ </widget>
+ <resources>
+  <include location="resources.qrc"/>
+ </resources>
+ <connections/>
+</ui>
