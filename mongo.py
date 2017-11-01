@@ -27,7 +27,10 @@ from model.physician import *
 from util.med2image import *
 from util.image import *
 
-client = MongoClient('mongodb://localhost:27017/')
+MONGO_DB_URL = 'mongodb://localhost:27017/'
+JPG_DIRECTORY = join(dirname(__file__),"Image")
+
+client = MongoClient(MONGO_DB_URL)
 db = client['DICOM']
 
 patients = db['patient']
@@ -37,7 +40,6 @@ images = db['image']
 physicians = db['physician']
 dicom_files = db['dicom']
 
-JPG_DIRECTORY = join(dirname(__file__),"Image")
 
 def time_to_int(time):
     return time.hour * 3600 + time.hour * 60 + time.second
@@ -169,7 +171,7 @@ def insert_image(ds,parent_id,name_file):
             image_dicom = med2image_dcm(inputFile=name_file,
                                     outputDir=JPG_DIRECTORY,
                                     outputFileStem=str(insert.inserted_id),
-                                    outputFileType="jpg",sliceToConvert='0')
+                                    outputFileType="jpg")
             image_dicom.run()
         return images.find_one({"_id": insert.inserted_id})
     else:

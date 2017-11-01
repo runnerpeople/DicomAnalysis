@@ -1,0 +1,367 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>AppWindow</class>
+ <widget class="QMainWindow" name="AppWindow">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>685</width>
+    <height>740</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>MainWindow</string>
+  </property>
+  <property name="styleSheet">
+   <string notr="true">#AppWindow {
+    background-image: url(:/image/medical-background-with-loop_4p1uvboye__F0008.png);
+}</string>
+  </property>
+  <widget class="QWidget" name="centralwidget">
+   <widget class="QTableView" name="result_table">
+    <property name="geometry">
+     <rect>
+      <x>10</x>
+      <y>340</y>
+      <width>661</width>
+      <height>381</height>
+     </rect>
+    </property>
+   </widget>
+   <widget class="QWidget" name="gridLayoutWidget">
+    <property name="geometry">
+     <rect>
+      <x>10</x>
+      <y>20</y>
+      <width>661</width>
+      <height>261</height>
+     </rect>
+    </property>
+    <layout class="QGridLayout" name="basicLayout">
+     <item row="1" column="7">
+      <widget class="QLineEdit" name="instituition_name_edit"/>
+     </item>
+     <item row="2" column="4" colspan="2">
+      <spacer name="horizontalSpacer2">
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
+       </property>
+       <property name="sizeHint" stdset="0">
+        <size>
+         <width>40</width>
+         <height>20</height>
+        </size>
+       </property>
+      </spacer>
+     </item>
+     <item row="1" column="1">
+      <widget class="QLabel" name="patient_id_label">
+       <property name="text">
+        <string>Patient ID</string>
+       </property>
+       <property name="alignment">
+        <set>Qt::AlignCenter</set>
+       </property>
+      </widget>
+     </item>
+     <item row="3" column="3">
+      <widget class="QLineEdit" name="physician_edit"/>
+     </item>
+     <item row="1" column="6">
+      <widget class="QLabel" name="instutuition_name_label">
+       <property name="text">
+        <string>Instituition Name</string>
+       </property>
+       <property name="alignment">
+        <set>Qt::AlignCenter</set>
+       </property>
+      </widget>
+     </item>
+     <item row="3" column="4" colspan="2">
+      <spacer name="horizontalSpacer3">
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
+       </property>
+       <property name="sizeHint" stdset="0">
+        <size>
+         <width>40</width>
+         <height>20</height>
+        </size>
+       </property>
+      </spacer>
+     </item>
+     <item row="1" column="3">
+      <widget class="QLineEdit" name="patient_gender_edit"/>
+     </item>
+     <item row="3" column="6">
+      <widget class="QLabel" name="image_date_label">
+       <property name="text">
+        <string>Image Date</string>
+       </property>
+       <property name="alignment">
+        <set>Qt::AlignCenter</set>
+       </property>
+      </widget>
+     </item>
+     <item row="2" column="1">
+      <widget class="QLabel" name="patient_gender_label">
+       <property name="text">
+        <string>Patient Gender</string>
+       </property>
+       <property name="alignment">
+        <set>Qt::AlignCenter</set>
+       </property>
+      </widget>
+     </item>
+     <item row="4" column="3" colspan="5">
+      <widget class="QPlainTextEdit" name="advanced_condition_edit"/>
+     </item>
+     <item row="3" column="1">
+      <widget class="QLabel" name="physician_label">
+       <property name="text">
+        <string>Physician</string>
+       </property>
+       <property name="alignment">
+        <set>Qt::AlignCenter</set>
+       </property>
+      </widget>
+     </item>
+     <item row="2" column="6">
+      <widget class="QLabel" name="modality_label">
+       <property name="text">
+        <string>Modality</string>
+       </property>
+       <property name="alignment">
+        <set>Qt::AlignCenter</set>
+       </property>
+      </widget>
+     </item>
+     <item row="1" column="4" colspan="2">
+      <spacer name="horizontalSpacer1">
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
+       </property>
+       <property name="sizeHint" stdset="0">
+        <size>
+         <width>40</width>
+         <height>20</height>
+        </size>
+       </property>
+      </spacer>
+     </item>
+     <item row="0" column="3">
+      <widget class="QCheckBox" name="patientBox">
+       <property name="text">
+        <string>Patient</string>
+       </property>
+      </widget>
+     </item>
+     <item row="3" column="7">
+      <widget class="QDateEdit" name="image_date_edit"/>
+     </item>
+     <item row="0" column="4">
+      <widget class="QCheckBox" name="studyBox">
+       <property name="text">
+        <string>Study</string>
+       </property>
+      </widget>
+     </item>
+     <item row="0" column="6">
+      <widget class="QCheckBox" name="imageBox">
+       <property name="text">
+        <string>Image</string>
+       </property>
+      </widget>
+     </item>
+     <item row="0" column="5">
+      <widget class="QCheckBox" name="serieBox">
+       <property name="text">
+        <string>Serie</string>
+       </property>
+      </widget>
+     </item>
+     <item row="0" column="7">
+      <widget class="QCheckBox" name="dicomBox">
+       <property name="text">
+        <string>DICOM</string>
+       </property>
+      </widget>
+     </item>
+     <item row="4" column="1">
+      <widget class="QLabel" name="advanced_condition_label">
+       <property name="text">
+        <string>Advanced
+Condition
+ (MongoDB bson)</string>
+       </property>
+       <property name="alignment">
+        <set>Qt::AlignCenter</set>
+       </property>
+      </widget>
+     </item>
+     <item row="0" column="1">
+      <widget class="QLabel" name="model_label">
+       <property name="text">
+        <string>Model</string>
+       </property>
+       <property name="alignment">
+        <set>Qt::AlignCenter</set>
+       </property>
+      </widget>
+     </item>
+     <item row="2" column="7">
+      <widget class="QComboBox" name="modality_box">
+       <item>
+        <property name="text">
+         <string>All</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>CR</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>MG</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>PT</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>XA</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>ES</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>CT</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>MR</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>RF</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>US</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>DX</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>NM</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>SC</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>OT</string>
+        </property>
+       </item>
+      </widget>
+     </item>
+     <item row="2" column="3">
+      <widget class="QComboBox" name="patientGender_box">
+       <item>
+        <property name="text">
+         <string>All</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>M</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>F</string>
+        </property>
+       </item>
+      </widget>
+     </item>
+    </layout>
+   </widget>
+   <widget class="QPushButton" name="search_button">
+    <property name="geometry">
+     <rect>
+      <x>280</x>
+      <y>300</y>
+      <width>93</width>
+      <height>28</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Search</string>
+    </property>
+   </widget>
+  </widget>
+  <action name="actionAdd_dicom">
+   <property name="text">
+    <string>Add dicom file (dcm)</string>
+   </property>
+  </action>
+  <action name="actionAdd_dicom_dir_DICOMDIR">
+   <property name="text">
+    <string>Add dicom dir (DICOMDIR)</string>
+   </property>
+  </action>
+  <action name="actionCopy_dicom">
+   <property name="text">
+    <string>Copy dicom</string>
+   </property>
+  </action>
+  <action name="actionDelete_dicom_file">
+   <property name="text">
+    <string>Delete dicom</string>
+   </property>
+  </action>
+  <action name="actionQuery">
+   <property name="text">
+    <string>Basic search</string>
+   </property>
+  </action>
+  <action name="actionAdvanced_query_For_Advanced_User">
+   <property name="text">
+    <string>Advanced query (For Advanced User)</string>
+   </property>
+  </action>
+  <action name="actionStorage">
+   <property name="text">
+    <string>URL Storage</string>
+   </property>
+  </action>
+  <action name="actionDicom_Image_Storage">
+   <property name="text">
+    <string>Dicom/Image Storage</string>
+   </property>
+  </action>
+ </widget>
+ <resources>
+  <include location="resources.qrc"/>
+ </resources>
+ <connections/>
+</ui>

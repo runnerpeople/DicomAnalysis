@@ -261,31 +261,33 @@ class med2image_dcm(med2image):
         med2image.__init__(self, **kwargs)
 
         self.l_dcmFileNames = sorted(glob.glob('%s/*.dcm' % self._str_inputDir))
+        self._short_fileName = self._str_inputFile[self._str_inputFile.rfind("/")+1:]
+        self._sliceToConvert = [self.l_dcmFileNames.index(i) for i in self.l_dcmFileNames if self._short_fileName in i][0]
         self.slices         = len(self.l_dcmFileNames)
 
         image = None
 
         if self._b_convertMiddleSlice:
             self._sliceToConvert = int(self.slices/2)
-            self._dcm            = dicom.read_file(self.l_dcmFileNames[self._sliceToConvert],force=True)
+            self._dcm            = dicom.read_file(self.l_dcmFileNames[self._sliceToConvert])
             self._str_inputFile  = self.l_dcmFileNames[self._sliceToConvert]
             if not self._str_outputFileStem.startswith('%'):
                 self._str_outputFileStem, ext = os.path.splitext(self.l_dcmFileNames[self._sliceToConvert])
         if not self._b_convertMiddleSlice and self._sliceToConvert != -1:
-            self._dcm = dicom.read_file(self.l_dcmFileNames[self._sliceToConvert],force=True)
+            self._dcm = dicom.read_file(self.l_dcmFileNames[self._sliceToConvert])
             self._str_inputFile = self.l_dcmFileNames[self._sliceToConvert]
         else:
-            self._dcm = dicom.read_file(self._str_inputFile,force=True)
+            self._dcm = dicom.read_file(self._str_inputFile)
         if self._sliceToConvert == -1:
             self._b_3D = True
-            self._dcm = dicom.read_file(self._str_inputFile,force=True)
+            self._dcm = dicom.read_file(self._str_inputFile)
             image = self._dcm.pixel_array
 
             shape2D = image.shape
             self._Vnp_3DVol = np.empty( (shape2D[0], shape2D[1], self.slices) )
             i = 0
             for img in self.l_dcmFileNames:
-                self._dcm = dicom.read_file(img,force=True)
+                self._dcm = dicom.read_file(img)
                 image = self._dcm.pixel_array
                 self._dcmList.append(self._dcm)
                 try:

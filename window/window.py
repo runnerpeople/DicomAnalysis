@@ -11,6 +11,10 @@ import window.designer2 as sign_up
 import window.designer3 as forget
 from window.designer4 import *
 import window.designer5 as del_window
+import window.designer6 as storage_window
+import window.designer7 as image_storage_window
+import window.designer8 as about_window
+import window.designer9 as search_window
 
 from window.modelQt import CustomModel
 
@@ -22,8 +26,14 @@ import threading
 from functools import partial
 import copy
 import sys
+import json
 
 current_user = None
+
+def merge_two_dicts(x, y):
+    z = copy.deepcopy(x)
+    z.update(y)
+    return z
 
 class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
 
@@ -343,9 +353,11 @@ class AppWindow(QtGui.QMainWindow, Ui_AppWindow):
         self.actionAdd_dicom.triggered.connect(self.add_dicom)
         self.actionAdd_dicom_dir_DICOMDIR.triggered.connect(self.add_dicomdir)
         self.actionDelete_dicom_file.triggered.connect(self.delete_dicom)
-
-        self.delete_window = Delete_Window()
-        self.delete_window.destroyed.connect(self.check)
+        self.actionQuery.triggered.connect(partial(self.search,False))
+        self.actionQuery_For_Advanced_User.triggered.connect(partial(self.search,True))
+        self.actionStorage.triggered.connect(self.storage_url)
+        self.actionImage_Storage.triggered.connect(self.image_storage_url)
+        self.actionAbout_app.triggered.connect(self.about_app)
 
         lock = threading.Lock()
         with lock:
@@ -552,7 +564,7 @@ class AppWindow(QtGui.QMainWindow, Ui_AppWindow):
             msg = QMessageBox()
             msg.setIcon(QMessageBox.Warning)
             msg.setText(
-                "Unsuccessfully add DICOM [" + filename + "]" + "to MongoDB. Cause: " + sys.exc_info()[0])
+                "Unsuccessfully add DICOM [" + filename + "]" + "to MongoDB. Cause: " + str(sys.exc_info()[0]))
             msg.setWindowTitle("MongoDB_Add")
             msg.setStandardButtons(QMessageBox.Ok)
             msg.exec_()
@@ -569,7 +581,7 @@ class AppWindow(QtGui.QMainWindow, Ui_AppWindow):
                 msg = QMessageBox()
                 msg.setIcon(QMessageBox.Information)
                 msg.setText(
-                    "Successfully add DICOMDIR [" + filename + "]" + "to MongoDB")
+                    "Successfully add DICOMDIR [" + filename + "]" + " to MongoDB")
                 msg.setWindowTitle("MongoDB_Add")
                 msg.setStandardButtons(QMessageBox.Ok)
                 msg.exec_()
@@ -578,22 +590,37 @@ class AppWindow(QtGui.QMainWindow, Ui_AppWindow):
             msg = QMessageBox()
             msg.setIcon(QMessageBox.Warning)
             msg.setText(
-                "Unsuccessfully add DICOMDIR [" + filename + "]" + "to MongoDB. Cause: " + sys.exc_info()[0])
+                "Unsuccessfully add DICOMDIR [" + filename + "]" + " to MongoDB. Cause: " + str(sys.exc_info()[0]))
             msg.setWindowTitle("MongoDB_Add")
             msg.setStandardButtons(QMessageBox.Ok)
             msg.exec_()
 
     def delete_dicom(self):
+        self.delete_window = Delete_Window(self)
         self.delete_window.show()
 
-    def check(self):
-        print("aaa")
+    def storage_url(self):
+        self.storage_window = Storage_Window(self)
+        self.storage_window.show()
+
+    def image_storage_url(self):
+        self.image_storage_window = Image_Storage_Window()
+        self.image_storage_window.show()
+
+    def about_app(self):
+        self.about_app_window = About_Window()
+        self.about_app_window.show()
+
+    def search(self,isAdvanced):
+        self.search_window = Search_Window(isAdvanced=isAdvanced)
+        self.search_window.show()
 
 
 class Delete_Window(QtGui.QMainWindow, del_window.Ui_MainWindow):
     def __init__(self, parent=None):
         super(Delete_Window, self).__init__(parent)
         self.setupUi(self)
+        self.parent = parent
 
         self.confirm_button.clicked.connect(self.delete_file)
 
@@ -603,10 +630,244 @@ class Delete_Window(QtGui.QMainWindow, del_window.Ui_MainWindow):
 
 
     def delete_file(self):
-        deleted_dicom = find_dicom_and_delete_by_filename(self.comboBox.currentText())
-        deleted_image = find_image_and_delete(deleted_dicom["parent_id"])
+        try:
+            deleted_dicom = find_dicom_and_delete_by_filename(self.comboBox.currentText())
+            deleted_image = find_image_and_delete(deleted_dicom["parent_id"])
 
-        if isfile(join(JPG_DIRECTORY,str(deleted_image["_id"])+".jpg")):
-            os.remove(join(JPG_DIRECTORY,str(deleted_image["_id"])+".jpg"))
+            if isfile(join(JPG_DIRECTORY,str(deleted_image["_id"])+".jpg")):
+                os.remove(join(JPG_DIRECTORY,str(deleted_image["_id"])+".jpg"))
+
+            msg = QMessageBox()
+            msg.setIcon(QMessageBox.Information)
+            msg.setText(
+                "Successfully delete DICOM [" + deleted_dicom["name_file"] + "]" + " from MongoDB")
+            msg.setWindowTitle("MongoDB_Delete")
+            msg.setStandardButtons(QMessageBox.Ok)
+            msg.exec_()
+
+            self.parent.update_table()
+
+            self.close()
+        except:
+            msg = QMessageBox()
+            msg.setIcon(QMessageBox.Warning)
+            msg.setText(
+                "Unsuccessfully delete DICOM [" + self.comboBox.currentText() + "]" + " from MongoDB. Cause: " + str(sys.exc_info()[0]))
+            msg.setWindowTitle("MongoDB_Delete")
+            msg.setStandardButtons(QMessageBox.Ok)
+            msg.exec_()
+
+class Storage_Window(QtGui.QMainWindow, storage_window.Ui_MainWindow):
+    def __init__(self, parent=None):
+        super(Storage_Window, self).__init__(parent)
+        self.setupUi(self)
+        self.parent = parent
+
+        self.url_edit.setText(MONGO_DB_URL)
+
+        self.check_button.clicked.connect(self.check_url)
+        self.confirm_button.clicked.connect(self.change_url)
+
+
+    def check_url(self):
+        try:
+            check_client = MongoClient(self.url_edit.text(),serverSelectionTimeoutMS=10000)
+            check_client.server_info()
+
+            msg = QMessageBox()
+            msg.setIcon(QMessageBox.Information)
+            msg.setText(
+                "You can change URL")
+            msg.setWindowTitle("MongoDB_ChangeURL")
+            msg.setStandardButtons(QMessageBox.Ok)
+            msg.exec_()
+            return True
+
+        except:
+            msg = QMessageBox()
+            msg.setIcon(QMessageBox.Warning)
+            msg.setText(
+                "You can't change URL. Cause: " + str(sys.exc_info()[0]))
+            msg.setWindowTitle("MongoDB_ChangeURL")
+            msg.setStandardButtons(QMessageBox.Ok)
+            msg.exec_()
+            return False
+
+    def change_url(self):
+        global MONGO_DB_URL
+        global client
+        global db
+        global patients
+        global studies
+        global series
+        global images
+        global physicians
+        global dicom_files
+
+        if self.check_url():
+
+            MONGO_DB_URL = self.url_edit.text()
+            client = MongoClient()
+            db = client['DICOM']
+
+            patients = db['patient']
+            studies = db['study']
+            series = db['serie']
+            images = db['image']
+            physicians = db['physician']
+            dicom_files = db['dicom']
+
+            msg = QMessageBox()
+            msg.setIcon(QMessageBox.Information)
+            msg.setText(
+                "Success change URL to " + MONGO_DB_URL)
+            msg.setWindowTitle("MongoDB_ChangeURL")
+            msg.setStandardButtons(QMessageBox.Ok)
+            msg.exec_()
+
+            self.parent.update_table()
+
+            self.close()
+
+class Image_Storage_Window(QtGui.QMainWindow, image_storage_window.Ui_MainWindow):
+    def __init__(self, parent=None):
+        super(Image_Storage_Window, self).__init__(parent)
+        self.setupUi(self)
+
+        self.url_edit.setText(JPG_DIRECTORY)
+
+        self.choose_button.clicked.connect(self.choose_dir)
+        self.confirm_button.clicked.connect(self.change_dir)
+
+
+    def choose_dir(self):
+        filename = QFileDialog.getExistingDirectory(self, 'Select a directory', JPG_DIRECTORY)
+        self.url_edit.setText(filename)
+
+    def change_dir(self):
+        global JPG_DIRECTORY
+
+        JPG_DIRECTORY = self.url_edit.text()
 
         self.close()
+
+class About_Window(QtGui.QMainWindow, about_window.Ui_MainWindow):
+    def __init__(self, parent=None):
+        super(About_Window, self).__init__(parent)
+        self.setupUi(self)
+
+class Search_Window(QtGui.QMainWindow, search_window.Ui_AppWindow):
+    def __init__(self, parent=None,isAdvanced=False):
+        super(Search_Window, self).__init__(parent)
+        self.setupUi(self)
+
+        self.isAdvanced = isAdvanced
+
+        self.advanced_condition_edit.setEnabled(isAdvanced)
+        self.search_button.clicked.connect(self.search)
+
+
+    def search(self):
+        patient_keys = ["patient_name", "patient_id", "patient_birth", "patient_sex"]
+        study_keys = ["study_instance_uid", "study_id", "study_date", "study_time",
+                      "accession_number",
+                      "study_description", "institution_name", "referring_physician_name"]
+        serie_keys = ["serie_instance_uid", "series_description", "serie_number", "modality",
+                      "series_date",
+                      "series_time", "protocol_name", "laterality", "body_part_thickness", "compression_force",
+                      "body_part_examined", "view_position"]
+        image_keys = ["instance_number", "patient_orientation", "content_date", "content_time",
+                      "image_type",
+                      "samples_per_pixel", "photometric_interpretation", "rows", "columns", "bits_allocated",
+                      "bits_stored", "high_bit",
+                      "pixel_representation", "pixel_aspect_ratio", "planar_configuration"]
+        dicom_keys = ["name_file", "modified", "user_info"]
+
+        result_keys = []
+
+        if self.patientBox.isChecked() == True:
+            result_keys.extend(patient_keys)
+        if self.studyBox.isChecked() == True:
+            result_keys.extend(study_keys)
+        if self.serieBox.isChecked() == True:
+            result_keys.extend(serie_keys)
+        if self.imageBox.isChecked() == True:
+            result_keys.extend(image_keys)
+        if self.dicomBox.isChecked() == True:
+            result_keys.extend(dicom_keys)
+
+        self.search_model = CustomModel(result_keys, self.result_table)
+        self.result_table.setModel(self.search_model)
+
+        self.search_model.datatable = []
+
+        patient_filter = dict()
+        study_filter = dict()
+        serie_filter = dict()
+        image_filter = dict()
+        dicom_filter = dict()
+
+        user_filter_str = self.advanced_condition_edit.toPlainText()
+        user_filter = dict()
+
+        if self.patient_gender_edit.text() is not None and self.patient_gender_edit.text() != "":
+            patient_filter = merge_two_dicts(patient_filter,{"patient_id" : self.patient_gender_edit.text()})
+        if self.patientGender_box.currentText() != "All":
+            patient_filter = merge_two_dicts(patient_filter,{"patient_sex": self.patientGender_box.currentText()})
+        if self.physician_edit.text() is not None and self.physician_edit.text() != "":
+            study_filter = merge_two_dicts(study_filter,{"referring_physician_name": self.physician_edit.text()})
+        if self.instituition_name_edit.text() is not None and self.instituition_name_edit.text() != "":
+            study_filter = merge_two_dicts(study_filter,{"institution_name": self.instituition_name_edit.text()})
+        if self.modality_box.currentText() != "All":
+            serie_filter = merge_two_dicts(serie_filter,{"modality": self.modality_box.currentText().encode()})
+        if self.image_date_edit.date().toPyDate() != datetime.date(2000,1,1):
+            image_filter = merge_two_dicts(image_filter,{"content_date": self.image_date_edit.date().toPyDate()})
+
+        if self.isAdvanced:
+            try:
+                user_filter = json.loads(user_filter_str)
+            except:
+                msg = QMessageBox()
+                msg.setIcon(QMessageBox.Information)
+                msg.setText(
+                    "Not valid BSON for filter")
+                msg.setWindowTitle("MongoDB_Search")
+                msg.setStandardButtons(QMessageBox.Ok)
+                msg.exec_()
+
+            for key, value in user_filter.items():
+                if key in patient_keys:
+                    patient_filter = merge_two_dicts(patient_filter,{key: value})
+                elif key in study_keys:
+                    study_filter = merge_two_dicts(study_filter,{key:value})
+                elif key in serie_keys:
+                    serie_filter = merge_two_dicts(serie_filter,{key:value})
+                elif key in image_keys:
+                    image_filter = merge_two_dicts(image_filter,{key:value})
+                elif key in dicom_keys:
+                    dicom_filter = merge_two_dicts(dicom_filter,{key:value})
+
+
+        dicom_files_db = get_dicom(merge_two_dicts({"modified": {"$in": [current_user["_id"], None]}},dicom_filter))
+
+        for dicom_file in dicom_files_db:
+
+            images_db = get_image(merge_two_dicts(image_filter,{"_id": dicom_file["parent_id"]}))
+            for image in images_db:
+                series_db = get_serie(merge_two_dicts(serie_filter,{"_id": image["parent_id"]}))
+                for serie in series_db:
+                    study_db = get_study(merge_two_dicts(study_filter,{"_id": serie["parent_id"]}))
+                    for study in study_db:
+                        patients_db = get_patient(merge_two_dicts(patient_filter,{"_id": study["parent_id"]}))
+                        for patient in patients_db:
+                            result = dicom_file
+                            result = merge_two_dicts(result,image)
+                            result = merge_two_dicts(result,serie)
+                            result = merge_two_dicts(result,study)
+                            result = merge_two_dicts(result,patient)
+                            self.search_model.datatable.append(result)
+
+        self.result_table.model().layoutChanged.emit()
+
+
+

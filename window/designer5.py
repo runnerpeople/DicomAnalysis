@@ -25,7 +25,7 @@ except AttributeError:
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
         MainWindow.setObjectName(_fromUtf8("MainWindow"))
-        MainWindow.resize(266, 139)
+        MainWindow.setFixedSize(266, 139)
         MainWindow.setStyleSheet(_fromUtf8("#MainWindow { \n"
 "    background-image: url(:/image/497102554.jpg);\n"
 "}"))

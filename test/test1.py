@@ -1,62 +1,67 @@
-from pydicom import compat
-import tkinter.tix as tkinter_tix
+from os.path import dirname, join
+from pprint import pprint
 
+import pydicom
+from pydicom.filereader import *
 
-def RunTree(w, filename):
-    top = tkinter_tix.Frame(w, relief=tkinter_tix.RAISED, bd=1)
-    tree = tkinter_tix.Tree(top, options="hlist.columns 2")
-    tree.pack(expand=1, fill=tkinter_tix.BOTH, padx=10, pady=10,
-              side=tkinter_tix.LEFT)
-    # print(tree.hlist.keys())   # use to see the available configure() options
-    tree.hlist.configure(bg='white', font='Courier 10', indent=30)
-    tree.hlist.configure(selectbackground='light yellow', gap=150)
+# fetch the path to the test data
 
-    box = tkinter_tix.ButtonBox(w, orientation=tkinter_tix.HORIZONTAL)
-    # box.add('ok', text='Ok', underline=0, command=w.destroy, width=6)
-    box.add('exit', text='Exit', underline=0, command=w.destroy, width=6)
-    box.pack(side=tkinter_tix.BOTTOM, fill=tkinter_tix.X)
-    top.pack(side=tkinter_tix.TOP, fill=tkinter_tix.BOTH, expand=1)
+print(dirname(__file__)[:dirname(__file__).rindex("/")])
+filepath = join(dirname(__file__)[:dirname(__file__).rindex("/")],"Data","dicomdirtests","DICOMDIR")
+print('Path to the DICOM directory: {}'.format(filepath))
+# load the data
+dicom_dir = read_dicomdir(filepath)
+base_dir = dirname(filepath)
 
-    show_file(filename, tree)
+# go through the patient record and print information
+for patient_record in dicom_dir.patient_records:
+    if (hasattr(patient_record, 'PatientID') and
+            hasattr(patient_record, 'PatientsName')):
+        print("Patient: {}: {}".format(patient_record.PatientID,
+                                       patient_record.PatientsName))
+    studies = patient_record.children
+    # got through each serie
+    for study in studies:
+        print(" " * 4 + "Study {}: {}: {}".format(study.StudyID,
+                                                  study.StudyDate,
+                                                  study.StudyDescription))
+        all_series = study.children
+        # go through each serie
+        for series in all_series:
+            image_count = len(series.children)
+            plural = ('', 's')[image_count > 1]
 
+            # Write basic series info and image count
 
-def show_file(filename, tree):
-    tree.hlist.add("root", text=filename)
-    ds = pydicom.read_file(sys.argv[1])
-    ds.decode()  # change strings to unicode
-    recurse_tree(tree, ds, "root", False)
-    tree.autosetmode()
+            # Put N/A in if no Series Description
+            if 'SeriesDescription' not in series:
+                series.SeriesDescription = "N/A"
+            print(" " * 8 + "Series {}: {}: {} ({} image{})".format(
+                series.SeriesNumber, series.Modality, series.SeriesDescription,
+                image_count, plural))
 
+            # Open and read something from each image, for demonstration
+            # purposes. For simple quick overview of DICOMDIR, leave the
+            # following out
+            print(" " * 12 + "Reading images...")
+            image_records = series.children
+            image_filenames = [join(base_dir, *image_rec.ReferencedFileID)
+                               for image_rec in image_records]
 
-def recurse_tree(tree, dataset, parent, hide=False):
-    # order the dicom tags
-    for data_element in dataset:
-        node_id = parent + "." + hex(id(data_element))
-        if isinstance(data_element.value, compat.text_type):
-            tree.hlist.add(node_id, text=compat.text_type(data_element))
-        else:
-            tree.hlist.add(node_id, text=str(data_element))
-        if hide:
-            tree.hlist.hide_entry(node_id)
-        if data_element.VR == "SQ":   # a sequence
-            for i, dataset in enumerate(data_element.value):
-                item_id = node_id + "." + str(i + 1)
-                sq_item_description = data_element.name.replace(
-                    " Sequence", "")  # XXX not i18n
-                item_text = "{0:s} {1:d}".format(sq_item_description, i + 1)
-                tree.hlist.add(item_id, text=item_text)
-                tree.hlist.hide_entry(item_id)
-                recurse_tree(tree, dataset, item_id, hide=True)
+            datasets = [read_file(image_filename)
+                        for image_filename in image_filenames]
 
+            patient_names = set(ds.PatientName for ds in datasets)
+            patient_IDs = set(ds.PatientID for ds in datasets)
 
-if __name__ == '__main__':
-    import sys
-    import pydicom
-    if len(sys.argv) != 2:
-        print("Please supply a dicom file name:\n")
-        sys.exit(-1)
-    root = tkinter_tix.Tk()
-    root.geometry("{0:d}x{1:d}+{2:d}+{3:d}".format(800, 600, 0, 0))
+            # List the image filenames
+            print("\n" + " " * 12 + "Image filenames:")
+            print(" " * 12, end=' ')
+            pprint(image_filenames, indent=12)
 
-    RunTree(root, sys.argv[1])
-    root.mainloop()
+            # Expect all images to have same patient name, id
+            # Show the set of all names, IDs found (should each have one)
+            print(" " * 12 + "Patient Names in images..: {}".format(
+                patient_names))
+            print(" " * 12 + "Patient IDs in images..: {}".format(
+                patient_IDs))
